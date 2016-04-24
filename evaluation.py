@@ -41,3 +41,22 @@ def find_worse(true_dict, prediction, threshold, k=5):
             apks[i] = 1
         
     return(apks < threshold)
+
+# Function create the new sample index
+def create_index(X, apks):
+    med = np.median(apks); index = []
+    
+    for i, apk in enumerate(apks):
+        if apk > med:
+            if np.random.choice([True, False]):
+                index.append(i)
+        else:
+            if np.random.choice([True, False]):
+                # If True, double the records
+                index.append(i)
+                index.append(i)
+            else:
+                # If False, only one record
+                index.append(i)
+    
+    return(np.asarray(index))
