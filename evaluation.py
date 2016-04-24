@@ -30,3 +30,14 @@ def evaluation(true_dict, prediction, k=5):
 
 #  evaluation(user_hotel, hotel2)
 ## 0.029880987328147167
+
+# Function finds those bad performance points
+def find_worse(true_dict, prediction, threshold, k=5):
+    apks = np.zeros(len(prediction))
+    for i, p in enumerate(prediction):
+        try:
+            apks[i] = apk(true_dict[p[0]], [float(h) for h in p[1].split(' ')])
+        except:
+            apks[i] = 1
+        
+    return(apks < threshold)
