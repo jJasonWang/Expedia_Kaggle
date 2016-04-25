@@ -5,12 +5,12 @@ def evaluation(true_dict, prediction, k=5):
     for _, p in enumerate(prediction):
         try:
             true_value = true_dict[p[0]]
-            pred = [float(h) for h in p[1].split(' ')]
-            actuals.append(true_value)
-            preds.append(pred)
         except:
-            next
-    
+            true_value = [float(h) for h in p[1].split(' ') if len(h) != 0]
+        pred = [float(h) for h in p[1].split(' ') if len(h) != 0]
+        actuals.append(true_value)
+        preds.append(pred)
+
     return(mapk(actuals, preds, k))
 
 # My example:
@@ -32,26 +32,28 @@ def evaluation(true_dict, prediction, k=5):
 ## 0.029880987328147167
 
 # Function finds those bad performance points
-def find_worse(true_dict, prediction, threshold, k=5):
+def calculate_apks(true_dict, prediction, k=5):
     apks = np.zeros(len(prediction))
     for i, p in enumerate(prediction):
         try:
-            apks[i] = apk(true_dict[p[0]], [float(h) for h in p[1].split(' ')])
+            true_value = true_dict[p[0]]
+            pred = [float(h) for h in p[1].split(' ') if len(h) != 0]
+            apks[i] = apk(true_value, pred, 5)
         except:
             apks[i] = 1
-        
-    return(apks < threshold)
+    
+    return(apks)
 
 # Function create the new sample index
-def create_index(X, apks):
+def create_index(apks):
     med = np.median(apks); index = []
     
     for i, apk in enumerate(apks):
         if apk > med:
-            if np.random.choice([True, False]):
+            if np.random.choice([True, False], p=[0.33, 0.67]):
                 index.append(i)
         else:
-            if np.random.choice([True, False]):
+            if np.random.choice([True, False], p=[0.67, 0.33]):
                 # If True, double the records
                 index.append(i)
                 index.append(i)
